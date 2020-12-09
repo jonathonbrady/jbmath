@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 /* The bottom toolbar for changing the properties of the selected element */
 function ElementPropertiesEditor(props) {
