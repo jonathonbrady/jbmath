@@ -16,7 +16,10 @@ export default function elementReducer(state = initialState, action) {
             ]
         }
         case 'elements/elementDeleted': {
-            return state.filter((element) => element.id !== action.payload)
+            if (state.length === 1) {
+                return []
+            }
+            return state.filter((element) => element.formula !== action.payload)
         }
         default:
             return state
