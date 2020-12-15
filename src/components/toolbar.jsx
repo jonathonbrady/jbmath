@@ -1,46 +1,80 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import EditorModal from './editor'
+import { atom, useRecoilState, useRecoilValue } from 'recoil'
+
+export const sceneElements = atom({
+  key: 'sceneElements',
+  default: []
+})
+
+export const totalScenes = atom({
+  key: 'totalScenes',
+  default: 0
+})
+
+export const currentScene = atom({
+  key: 'currentScene',
+  default: 0
+})
+
+export const elementText = atom({
+  key: 'elementText',
+  default: ''
+})
+
+export const sceneSet = atom({
+  key: 'sceneSet',
+  default: [[]]
+})
 
 const Toolbar = () => {
-  const [text, setText] = useState('')
-  const totalScenes = useSelector((state) => state.scenes.numberOfScenes)
-  const scene = useSelector((state) => state.scenes.currentScene)
-  const selectedElement = useSelector((state) => state.editor.selectedElement)
-  const dispatch = useDispatch()
+  const [text, setText] = useRecoilState(elementText)
+  const [numberOfScenes, setNumberOfScenes] = useRecoilState(totalScenes)
+  const [sceneNumber, setScene] = useRecoilState(currentScene)
+  const [elements, setSceneElements] = useRecoilState(sceneElements)
+  const [scenes, setStageElements] = useRecoilState(sceneSet)
 
   const handleChange = e => {
     setText(e.target.value)
   }
 
+  const addElementToScene = () => {
+    setSceneElements([...elements, text])
+    setStageElements([
+      ...scenes.slice(0, sceneNumber),
+      scenes[sceneNumber].concat(text),
+      ...scenes.slice(sceneNumber + 1)
+    ])
+    setText('')
+  }
+
   const handleKeyDown = e => {
     if (e.which === 13) {
-        dispatch({type: 'elements/elementAdded', payload: text})
-        setText('')
+      addElementToScene()
     }
   }
 
   const handleSubmit = () => {
-    dispatch({type: 'elements/elementAdded', payload: text})
-    setText('')
+    addElementToScene()
   }
 
   const addScene = () => {
-    dispatch({type: 'scene/sceneAdded', payload: totalScenes + 1})
+    setStageElements([...scenes, []])
+    setNumberOfScenes(numberOfScenes + 1)
   }
 
   const previousScene = () => {
-    dispatch({type: 'scene/previous', payload: scene - 1})
+    setScene(sceneNumber - 1)
   }
 
   const nextScene = () => {
-    dispatch({type: 'scene/next', payload: scene + 1})
+    setScene(sceneNumber + 1)
   }
 
   const openModal = () => {
-    dispatch({type: 'editor/openEditor', payload: text})
+
   }
 
   return (
@@ -76,12 +110,12 @@ const Toolbar = () => {
                 onClick={addScene}
               >New Scene</button>
               <button
-                disabled={scene === 1}
+                disabled={sceneNumber === 0}
                 class="button is-success"
                 onClick={previousScene}
               >-</button>
               <button
-                disabled={scene === totalScenes}
+                disabled={sceneNumber === numberOfScenes}
                 class="button is-success"
                 onClick={nextScene}
               >+</button>
@@ -89,11 +123,11 @@ const Toolbar = () => {
           </div>
 
           <div class="navbar-item">
-            <span class="tag is-white">Scene {scene} / {totalScenes}</span>
+            <span class="tag is-white">{text} {sceneNumber}</span>
           </div>
 
           <div class="navbar-item">
-            <button class="button is-warning" onClick={openModal} disabled={selectedElement === null}>
+            <button class="button is-warning" onClick={openModal} disabled>
               Edit
             </button>
           </div>

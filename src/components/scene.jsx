@@ -1,17 +1,47 @@
 import React from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
-import MathJaxElement from './mathjax_element'
-
-const selectElementIDs = (state) => state.elements.map((element) => element.id)
+import { atom, useRecoilValue } from 'recoil'
+import MathJax from 'react-mathjax'
+import { motion } from 'framer-motion'
+import { sceneSet, currentScene } from './toolbar'
 
 const Scene = () => {
-    const elementIDs = useSelector(selectElementIDs, shallowEqual)
-
-    const renderedItems = elementIDs.map((elementID) => {
-        return <MathJaxElement key={elementID} id={elementID} />
-    })
-
-    return <div className="scene">{renderedItems}</div>
+    const elements = useRecoilValue(sceneSet)[useRecoilValue(currentScene)]
+    if (elements !== undefined) {
+        if (Array.isArray(elements)) {
+            return (
+                elements.map((element) => (
+                    <motion.div
+                        animate={{scale: 1}}
+                        transition={{duration: 0}}
+                        drag
+                        dragMomentum={false}
+                        style={{display: 'inline-block'}}
+                    >
+                        <MathJax.Provider>
+                            <MathJax.Node formula={element} />
+                        </MathJax.Provider>
+                    </motion.div>
+                    )
+                )
+            )
+        } else {
+            return (
+                <motion.div
+                    animate={{scale: 1}}
+                    transition={{duration: 0}}
+                    drag
+                    dragMomentum={false}
+                    style={{display: 'inline-block'}}
+                >
+                    <MathJax.Provider>
+                        <MathJax.Node formula={elements} />
+                    </MathJax.Provider>
+                </motion.div>
+            )
+        }
+    } else {
+        return ( null )
+    }
 }
 
 export default Scene
