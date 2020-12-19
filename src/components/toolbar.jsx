@@ -4,11 +4,6 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import EditorModal from './editor'
 import { atom, useRecoilState, useRecoilValue } from 'recoil'
 
-export const sceneElements = atom({
-  key: 'sceneElements',
-  default: []
-})
-
 export const totalScenes = atom({
   key: 'totalScenes',
   default: 0
@@ -24,30 +19,50 @@ export const elementText = atom({
   default: ''
 })
 
-export const sceneSet = atom({
+export const elementSet = atom({
   key: 'sceneSet',
-  default: [[]]
+  default: []
+})
+
+export const debugModal = atom({
+  key: 'debugModal',
+  default: false
+})
+
+export const UID = atom({
+  key: 'UID',
+  default: 0
 })
 
 const Toolbar = () => {
+  const [debug, setDebug] = useState('')
   const [text, setText] = useRecoilState(elementText)
   const [numberOfScenes, setNumberOfScenes] = useRecoilState(totalScenes)
-  const [sceneNumber, setScene] = useRecoilState(currentScene)
-  const [elements, setSceneElements] = useRecoilState(sceneElements)
-  const [scenes, setStageElements] = useRecoilState(sceneSet)
+  const [sceneNumber, setSceneNumber] = useRecoilState(currentScene)
+  const [elements, setElements] = useRecoilState(elementSet)
+  const [visible, setVisible] = useRecoilState(debugModal)
+  const [uniqueID, setUniqueID] = useRecoilState(UID)
 
   const handleChange = e => {
     setText(e.target.value)
   }
 
   const addElementToScene = () => {
-    setSceneElements([...elements, text])
-    setStageElements([
-      ...scenes.slice(0, sceneNumber),
-      scenes[sceneNumber].concat(text),
-      ...scenes.slice(sceneNumber + 1)
+    setElements([
+      ...elements,
+      {
+        globalID: uniqueID,
+        sceneID: sceneNumber,
+        formula: text,
+        meta: {
+          x: 150,
+          y: 100
+        }
+      }
     ])
     setText('')
+    setUniqueID(uniqueID + 1)
+    setDebug('added element ' + text + ' to scene')
   }
 
   const handleKeyDown = e => {
@@ -61,23 +76,26 @@ const Toolbar = () => {
   }
 
   const addScene = () => {
-    setStageElements([...scenes, []])
     setNumberOfScenes(numberOfScenes + 1)
+    setDebug('increased to ' + (numberOfScenes + 1) + ' scenes')
   }
 
   const previousScene = () => {
-    setScene(sceneNumber - 1)
+    setSceneNumber(sceneNumber - 1)
+    setDebug('went back to scene ' + (sceneNumber - 1))
   }
 
   const nextScene = () => {
-    setScene(sceneNumber + 1)
+    setSceneNumber(sceneNumber + 1)
+    setDebug('went forward to scene ' + (sceneNumber + 1))
   }
 
   const openModal = () => {
-
+    setVisible(true)
   }
 
   return (
+    <>
     <nav
       class="navbar is-primary"
       role="navigation"
@@ -123,12 +141,12 @@ const Toolbar = () => {
           </div>
 
           <div class="navbar-item">
-            <span class="tag is-white">{text} {sceneNumber}</span>
+            <span class="tag is-white">{text} {sceneNumber} {visible ? 1 : 0}</span>
           </div>
 
           <div class="navbar-item">
-            <button class="button is-warning" onClick={openModal} disabled>
-              Edit
+            <button class="button is-warning" onClick={openModal}>
+              Debug
             </button>
           </div>
         </div>
@@ -148,6 +166,9 @@ const Toolbar = () => {
         </div>
       </div>
     </nav>
+    <pre>{debug}</pre>
+    <pre>{JSON.stringify(elements, null, 2)}</pre>
+    </>
   )
 }
 

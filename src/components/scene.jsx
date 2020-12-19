@@ -1,43 +1,27 @@
 import React from 'react'
 import { atom, useRecoilValue } from 'recoil'
-import MathJax from 'react-mathjax'
-import { motion } from 'framer-motion'
-import { sceneSet, currentScene } from './toolbar'
+import { elementSet, currentScene } from './toolbar'
+import MathElement from './mathelement'
 
 const Scene = () => {
-    const elements = useRecoilValue(sceneSet)[useRecoilValue(currentScene)]
+    const elements = useRecoilValue(elementSet)
+    const scene = useRecoilValue(currentScene)
     if (elements !== undefined) {
         if (Array.isArray(elements)) {
-            return (
-                elements.map((element) => (
-                    <motion.div
-                        animate={{scale: 1}}
-                        transition={{duration: 0}}
-                        drag
-                        dragMomentum={false}
-                        style={{display: 'inline-block'}}
-                    >
-                        <MathJax.Provider>
-                            <MathJax.Node formula={element} />
-                        </MathJax.Provider>
-                    </motion.div>
+            return (elements.filter(
+                e => e.sceneID === scene).map(
+                    (element) => (
+                        <MathElement
+                            elementID={element.globalID}
+                            text={element.formula}
+                            xPos={element.meta.x}
+                            yPos={element.meta.y}
+                        />
                     )
                 )
             )
         } else {
-            return (
-                <motion.div
-                    animate={{scale: 1}}
-                    transition={{duration: 0}}
-                    drag
-                    dragMomentum={false}
-                    style={{display: 'inline-block'}}
-                >
-                    <MathJax.Provider>
-                        <MathJax.Node formula={elements} />
-                    </MathJax.Provider>
-                </motion.div>
-            )
+            return (<MathElement text={elements} />)
         }
     } else {
         return ( null )
