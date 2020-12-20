@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import Scene from './components/scene'
-import Toolbar from './components/toolbar'
+import Scene from './components/Scene'
+import Toolbar from './components/Toolbar'
 import './css/App.sass'
 import { RecoilRoot, useRecoilValue } from 'recoil'
-import EditorModal from './components/editor'
+import EditorModal from './components/ElementEditorModal'
 
 const App = () => {
   return (

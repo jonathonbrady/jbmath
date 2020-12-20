@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import EditorModal from './editor'
-import { atom, useRecoilState, useRecoilValue } from 'recoil'
+import { atom, useRecoilState } from 'recoil'
 
 export const totalScenes = atom({
   key: 'totalScenes',
@@ -21,7 +20,7 @@ export const elementText = atom({
 
 export const elementSet = atom({
   key: 'sceneSet',
-  default: []
+  default: [[]]
 })
 
 export const debugModal = atom({
@@ -34,8 +33,15 @@ export const UID = atom({
   default: 0
 })
 
+/**
+ * The Toolbar is the main brain of the program at the moment, but a lot of
+ * refactoring and actually good design decisions are on the horizon.
+ * 
+ * There will probably be a "Toolbar" folder with a lot of Toolbar's current
+ * functionality as subcomponents, since they'll likely be reused in various GUIs,
+ * like for editing existing elements.
+ */
 const Toolbar = () => {
-  const [debug, setDebug] = useState('')
   const [text, setText] = useRecoilState(elementText)
   const [numberOfScenes, setNumberOfScenes] = useRecoilState(totalScenes)
   const [sceneNumber, setSceneNumber] = useRecoilState(currentScene)
@@ -49,20 +55,20 @@ const Toolbar = () => {
 
   const addElementToScene = () => {
     setElements([
-      ...elements,
-      {
-        globalID: uniqueID,
-        sceneID: sceneNumber,
-        formula: text,
-        meta: {
-          x: 150,
-          y: 100
-        }
-      }
+      ...elements.slice(0, sceneNumber),
+        elements[sceneNumber].concat({
+          globalID: uniqueID,
+          sceneID: sceneNumber,
+          formula: text,
+          meta: {
+            x: 150,
+            y: 100
+          }
+        }),
+      ...elements.slice(sceneNumber + 1)
     ])
     setText('')
     setUniqueID(uniqueID + 1)
-    setDebug('added element ' + text + ' to scene')
   }
 
   const handleKeyDown = e => {
@@ -77,17 +83,15 @@ const Toolbar = () => {
 
   const addScene = () => {
     setNumberOfScenes(numberOfScenes + 1)
-    setDebug('increased to ' + (numberOfScenes + 1) + ' scenes')
+    setElements([...elements, []])
   }
 
   const previousScene = () => {
     setSceneNumber(sceneNumber - 1)
-    setDebug('went back to scene ' + (sceneNumber - 1))
   }
 
   const nextScene = () => {
     setSceneNumber(sceneNumber + 1)
-    setDebug('went forward to scene ' + (sceneNumber + 1))
   }
 
   const openModal = () => {
@@ -166,7 +170,6 @@ const Toolbar = () => {
         </div>
       </div>
     </nav>
-    <pre>{debug}</pre>
     <pre>{JSON.stringify(elements, null, 2)}</pre>
     </>
   )

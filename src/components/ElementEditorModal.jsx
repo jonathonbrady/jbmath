@@ -1,6 +1,6 @@
 import MathJax from 'react-mathjax'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { elementSet, debugModal } from './toolbar'
+import { elementSet, debugModal } from './Toolbar'
 
 const EditorModal = () => {
     const elements = useRecoilValue(elementSet)
