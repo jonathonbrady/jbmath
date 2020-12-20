@@ -1,9 +1,10 @@
-import React, {Component} from 'react'
-import Scene from './components/Scene'
-import Toolbar from './components/Toolbar'
-import './css/App.sass'
-import { RecoilRoot, useRecoilValue } from 'recoil'
-import EditorModal from './components/ElementEditorModal'
+import React from 'react';
+import { RecoilRoot } from 'recoil';
+import Scene from './components/scene';
+import Toolbar from './components/toolbar';
+import EditorModal from './components/ElementEditorModal';
+
+import './css/App.sass';
 
 const App = () => {
   return (
@@ -12,7 +13,7 @@ const App = () => {
       <Scene />
       <EditorModal />
     </RecoilRoot>
-  )
-}
+  );
+};
 
 export default App;
