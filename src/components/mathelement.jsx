@@ -3,13 +3,14 @@ import "katex/dist/katex.min.css";
 import TeX from "@matejmazur/react-katex";
 import { motion } from "framer-motion";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { currentScene, elementSet } from "./toolbar";
+import { currentScene } from "./toolbar/SceneManager";
+import { elementSet } from "./modals/NewElementModal";
 
 /**
  * A MathElement consists of several properties:
- *  1. globalID: a unique ID assigned to an element which is never reused, even on deletion
+ *  1. globalID: a unique ID; the object's key
  *  2. sceneID: the only scene in which this object can display
- *  3. formula: the plaintext expression to be rendered in MathJax
+ *  3. formula: the plaintext expression to be rendered in LaTeX
  *  4. meta:
  *      a. x: its x position
  *      b. y: its y position
@@ -87,7 +88,7 @@ const MathElement = ({ data }) => {
     >
       <TeX
         block
-        math={data.formula}
+        math={"\\color{white}" + data.formula}
         style={{ position: "absolute", left: x + "px", top: y + "px" }}
       />
     </motion.div>

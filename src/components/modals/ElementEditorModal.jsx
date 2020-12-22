@@ -1,10 +1,22 @@
-import MathJax from "react-mathjax";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { elementSet, debugModal } from "./toolbar";
+import React from "react";
+import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { elementSet } from "./NewElementModal";
 
+/**
+ * Visibility state of EditorModal
+ */
+export const editModal = atom({
+  key: "editModal",
+  default: false,
+});
+
+/**
+ * The EditorModal is responsible for allowing the user to change the
+ * properties of an existing MathElement, like text, color, and animations.
+ */
 const EditorModal = () => {
   const elements = useRecoilValue(elementSet);
-  const [visible, setVisible] = useRecoilState(debugModal);
+  const [visible, setVisible] = useRecoilState(editModal);
 
   const closeModal = () => {
     setVisible(false);
@@ -22,11 +34,7 @@ const EditorModal = () => {
             onClick={closeModal}
           ></button>
         </header>
-        <section class="modal-card-body">
-          <pre>
-            {elements !== null ? JSON.stringify(elements, null, 2) : "hi"}
-          </pre>
-        </section>
+        <section class="modal-card-body"></section>
         <footer class="modal-card-foot">
           <div class="container"></div>
         </footer>
