@@ -1,5 +1,6 @@
 import React from "react";
-import { atom, useRecoilState } from "recoil";
+import { atom, useRecoilState, useSetRecoilState } from "recoil";
+import { selectedElement } from "../scene/MathElement";
 import { elementSet } from "../modals/NewElementModal";
 
 /**
@@ -19,6 +20,14 @@ export const currentScene = atom({
 });
 
 /**
+ * The current step ("keyframe") in the animation sequence
+ */
+export const currentStep = atom({
+  key: "currentStep",
+  default: 0,
+});
+
+/**
  * The scene manager is the set of three buttons that allow the user to add
  * scenes and change the current scene.
  */
@@ -26,6 +35,8 @@ const SceneManager = () => {
   const [elements, setElements] = useRecoilState(elementSet);
   const [numberOfScenes, setNumberOfScenes] = useRecoilState(totalScenes);
   const [sceneNumber, setSceneNumber] = useRecoilState(currentScene);
+  const [step, setStep] = useRecoilState(currentStep);
+  const setSelectedElement = useSetRecoilState(selectedElement);
 
   /**
    * Add an empty array to the element set upon creation of a new scene,
@@ -36,27 +47,42 @@ const SceneManager = () => {
     setElements([...elements, []]);
   };
 
-  const changeScene = (n) => {
+  const changeScene = (n: number) => {
+    setSelectedElement(-1);
     setSceneNumber(sceneNumber + n);
   };
 
+  const changeStep = (n: number) => {
+    setStep(step + n);
+  };
+
   return (
-    <div class="buttons">
-      <button class="button is-light" onClick={addScene}>
+    <div className="buttons">
+      <button className="button is-light" onClick={addScene}>
         New Scene
       </button>
       <button
         disabled={sceneNumber === 0}
-        class="button is-success"
+        className="button is-success"
         onClick={() => changeScene(-1)}
       >
         -
       </button>
       <button
         disabled={sceneNumber === numberOfScenes}
-        class="button is-success"
+        className="button is-success"
         onClick={() => changeScene(1)}
       >
+        +
+      </button>
+      <button
+        disabled={step === 0}
+        className="button is-info"
+        onClick={() => changeStep(-1)}
+      >
+        -
+      </button>
+      <button className="button is-info" onClick={() => changeStep(1)}>
         +
       </button>
     </div>
