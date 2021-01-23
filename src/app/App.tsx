@@ -19,7 +19,6 @@ import {
 import Panel from '../components/panel/Panel';
 
 import './App.sass';
-import './DarkReader.css';
 import 'katex/dist/katex.min.css';
 import useEventListener from '@use-it/event-listener';
 import { nextAnimation } from '../store/animationSlice';
