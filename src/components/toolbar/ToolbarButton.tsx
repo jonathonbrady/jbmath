@@ -1,15 +1,31 @@
 import { useState } from 'react';
-import DropdownButton, { IDropdownButton } from './DropdownButton';
+import DropdownItem, { IDropdownItem } from './DropdownItem';
 
 export interface IToolbarButton {
   name: string;
-  dropdownContents: Array<IDropdownButton>;
+  dropdownContents: Array<IDropdownItem>;
 }
 
-const ToolbarButton = ({ name, dropdownContents }: IToolbarButton) => {
-  const [active, setActive] = useState(false);
+interface LinkedDropdown {
+  active: boolean;
+  toggleActive: (name: string) => void;
+}
+
+type Props = IToolbarButton & LinkedDropdown;
+
+const ToolbarButton = ({
+  name,
+  active,
+  toggleActive,
+  dropdownContents
+}: Props) => {
   const dropdownMenuButtons = dropdownContents.map((e) => (
-    <DropdownButton name={e.name} onClick={e.onClick} />
+    <DropdownItem
+      key={e.name}
+      name={e.name}
+      onClick={e.onClick}
+      toggleActive={toggleActive}
+    />
   ));
   return (
     <div className={`dropdown ${active ? 'is-active' : ''}`}>
@@ -18,7 +34,7 @@ const ToolbarButton = ({ name, dropdownContents }: IToolbarButton) => {
           className="button is-primary"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setActive(!active)}
+          onClick={() => toggleActive(name)}
         >
           {name}
         </button>

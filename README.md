@@ -6,7 +6,9 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" />
 </p>
 
-jbmath is a standalone mathematics animation tool for lecturers and content creators. It's time for all students to be engaged in the classroom and foster an appreciation for the beauty of math. No more monotonous chalkboard lectures and no more complicated animation libraries.
+<p align="center">
+jbmath is a standalone mathematics animation tool for lecturers and content creators.
+</p>
 
 ## Installation
 
@@ -14,19 +16,14 @@ jbmath will have formal releases once it is in a state of even remote functional
 
 ## Usage
 
-The only expectation is that you are reasonably familiar with [LaTeX](https://www.latex-project.org), an easy-to-learn document typesetting system&mdash;which, if you're a math student or professor, is essentially a second language to you.
-
-## Alternatives
-
-- [manim](https://github.com/3b1b/manim) - manim is excellent! If your goal is to make videos with the extremely high level of sophistication seen on 3blue1brown's YouTube channel (assuming you are familiar with Python and all of the library's dependencies), you should use manim. jbmath's target audience is different, though, which comes at the expense of it not supporting 3D modeling or particularly sophisticated programmatical animation.
-- [PowerPoint](https://www.microsoft.com/en-us/microsoft-365/microsoft-office) - It isn't free, doesn't have native LaTeX support, and lacks a lot of the functionality of jbmath. If you're making a presentation on world history, then PowerPoint is probably a better choice.
+It's time for all students to be engaged in the classroom and foster an appreciation for the beauty of math. No more monotonous chalkboard lectures and no more complicated animation libraries. The only expectation is that you are reasonably familiar with [LaTeX](https://www.latex-project.org), an easy-to-learn document typesetting system&mdash;which, if you're a math student or professor, is essentially a second language to you.
 
 ## Contribution
 
 You are encouraged to contribute to jbmath! If something isn't working correctly, please [report it](https://github.com/jonathonbrady/jbmath/issues). If you wish to improve existing features, help eliminate bugs, or fix typos, please follow the standard fork-and-pull workflow for contributions.
 
-Please ensure all of your contributions follow the project's formatting standards ([Prettier with default settings](https://github.com/prettier/prettier)) and contain reasonably descriptive comments.
+Please ensure all of your contributions follow the project's formatting standards and contain reasonably descriptive comments.
 
-## Legal Nonsense
+## License
 
 Copyright © Jonathon Brady. All rights reserved. Licensed under the MIT license.

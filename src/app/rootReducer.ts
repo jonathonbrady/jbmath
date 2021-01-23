@@ -1,8 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import scenesReducer from '../store/SceneSlice';
+import contentReducer from '../store/contentSlice';
+import controlReducer from '../store/controlSlice';
+import animationReducer from '../store/animationSlice';
 
 const rootReducer = combineReducers({
-  scenes: scenesReducer
+  content: contentReducer,
+  control: controlReducer,
+  animations: animationReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

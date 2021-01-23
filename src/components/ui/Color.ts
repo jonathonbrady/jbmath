@@ -4,7 +4,7 @@ export type Color =
   | 'green'
   | 'light-blue'
   | 'blue'
-  | 'teal'
+  | 'theme'
   | 'light-gray'
   | 'gray'
   | 'white'
@@ -37,7 +37,7 @@ export const getBulmaColorClass = (c: string): CSSColor => {
       return 'is-info';
     case 'blue':
       return 'is-link';
-    case 'teal':
+    case 'theme':
       return 'is-primary';
     case 'light-gray':
       return 'is-light';

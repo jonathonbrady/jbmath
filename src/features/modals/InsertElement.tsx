@@ -5,15 +5,29 @@ import Modal from '../../components/modal/Modal';
 import Preview from '../../components/modal/Preview';
 import Input from '../../components/ui/Input';
 import { InputUpdate } from '../../components/ui/types';
-import { newMathElement } from '../../utils';
+import { getNewMathObject } from '../scene/elementCreators';
 import { IMathElement } from '../scene/MathElement';
 
+/**
+ * close:
+ *      callback function to set the current dialog to NONE
+ * scene:
+ *      the scene to which the element created inside this dialog should be added
+ * addElementToScene:
+ *      callback function to dispatch the addElement action to the store
+ */
 interface Props {
   close: () => void;
-  addElementToScene: (element: IMathElement, scene: number) => void;
+  scene: number;
+  addElementToScene: (formula: string, scene: number) => void;
 }
 
-const InsertElementModal = ({ close, addElementToScene }: Props) => {
+/**
+ * InsertElementModal:
+ *      the dialog that appears upon clicking Insert -> Element in the EditorToolbar.
+ *      Allows users to input a LaTeX expression to render in the current scene.
+ */
+const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
   const [text, setText] = useState<string>('');
 
   const handleTextChange = (e: InputUpdate) => {
@@ -32,7 +46,7 @@ const InsertElementModal = ({ close, addElementToScene }: Props) => {
 
   const handleSubmit = () => {
     close();
-    addElementToScene(newMathElement(text), 0);
+    addElementToScene(text, scene);
   };
 
   const footer: IFooter = {
