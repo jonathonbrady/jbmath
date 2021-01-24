@@ -7,11 +7,12 @@ import Modal from '../../components/modal/Modal';
 import Preview from '../../components/modal/Preview';
 import Panel from '../../components/panel/Panel';
 import Input from '../../components/ui/Input';
-import { addAnimation } from '../../store/animationSlice';
+import { addAnimation, addPosition } from '../../store/animationSlice';
 import { editElement } from '../../store/contentSlice';
 import { useSelectElement } from '../../hooks/useSelectElement';
 import { getAnimationSet } from '../animations/functions';
 import { IMathElement } from '../scene/MathElement';
+import { InputUpdate } from '../../components/ui/types';
 
 interface Props {
   close: () => void;
@@ -20,7 +21,27 @@ interface Props {
 const InsertAnimationModal = ({ close }: Props) => {
   const { selected } = useSelectElement();
   const { currentScene } = useSelector((state: RootState) => state.control);
+  const { animations } = useSelector((state: RootState) => state.animations);
   const dispatch = useDispatch();
+
+  const [positionText, setPositionText] = useState('');
+  const [lengthText, setLengthText] = useState('');
+
+  const handlePositionChange = (e: InputUpdate) => {
+    const newText = e.target.value;
+    const numbers = /^[0-9\b]+$/;
+    if (newText === '' || numbers.test(newText)) {
+      setPositionText(e.target.value);
+    }
+  };
+
+  const handleLengthChange = (e: InputUpdate) => {
+    const newText = e.target.value;
+    const numbers = /^[0-9\b]+$/;
+    if (newText === '' || numbers.test(newText)) {
+      setLengthText(e.target.value);
+    }
+  };
 
   const header: IHeader = {
     title: 'Add New Animation',
@@ -29,7 +50,9 @@ const InsertAnimationModal = ({ close }: Props) => {
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const body: JSX.Element[] = [
-    <Preview formula={selected ? selected.formula : ''} />,
+    <p className="heading">Applying Animation to {selected.formula}</p>,
+    <Preview formula={selected.formula} />,
+    <hr></hr>,
     //prettier-ignore
     <Panel
       content={[
@@ -44,17 +67,23 @@ const InsertAnimationModal = ({ close }: Props) => {
     <nav className="level">
       <div className="level-item has-text-centered">
         <div>
-          <p className="heading">Animation</p>
-          <p className="title">2/3</p>
+          <p className="heading">
+            Sequence Position - (Next: {animations.length})
+          </p>
+          <Input
+            text={positionText}
+            placeholder={'1, 2, 3...'}
+            onChange={handlePositionChange}
+          />
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
+          <p className="heading">Animation Length</p>
           <Input
-            text={''}
-            onChange={() => {
-              return;
-            }}
+            text={lengthText}
+            placeholder={'Time (seconds)'}
+            onChange={handleLengthChange}
           />
         </div>
       </div>
@@ -62,18 +91,22 @@ const InsertAnimationModal = ({ close }: Props) => {
   ];
 
   const handleSubmit = () => {
-    const animationObject = {
-      meta: {
-        name: 'Appear',
-        initial: { opacity: 0 },
-        animation: { opacity: 1 }
-      },
-      target: selected.id,
-      when: 1,
-      length: 0
-    };
-    dispatch(addAnimation(animationObject));
-    close();
+    const meta = getAnimationSet('enter').find((e) => e.name === selectedItem);
+    // This is never undefined
+    if (meta) {
+      const animationObject = {
+        meta: meta,
+        target: selected.id,
+        when: parseInt(positionText),
+        length: parseInt(lengthText)
+      };
+      if (animationObject.when > animations.length) {
+        alert('dsadsa');
+        dispatch(addPosition());
+      }
+      dispatch(addAnimation(animationObject));
+      close();
+    }
   };
 
   const footer: IFooter = {
@@ -81,7 +114,10 @@ const InsertAnimationModal = ({ close }: Props) => {
       {
         color: 'green',
         text: 'Confirm',
-        disabled: false,
+        disabled:
+          selectedItem === null ||
+          positionText.length === 0 ||
+          lengthText.length === 0,
         onClick: handleSubmit
       }
     ]

@@ -62,9 +62,18 @@ const App: React.FC = () => {
   };
 
   function keyPressHandler(key: KeyboardEvent) {
+    if (activeModal !== 'NONE') {
+      return;
+    }
     if (key.key === 'ArrowLeft') {
+      if (currentAnimation === -1) {
+        return;
+      }
       dispatch(nextAnimation(-1));
     } else if (key.key === 'ArrowRight') {
+      if (animations.length === currentAnimation + 1) {
+        return;
+      }
       dispatch(nextAnimation(1));
     }
   }
@@ -87,7 +96,6 @@ const App: React.FC = () => {
         addAnimation={() => alert()}
       />
       <StageManager scene={scenes[currentScene]} />
-      <p style={{ color: 'white' }}>{currentAnimation}</p>
     </>
   );
 };

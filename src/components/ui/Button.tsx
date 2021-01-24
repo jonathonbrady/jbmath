@@ -9,10 +9,10 @@ export interface IButton {
 
 const Button = ({ color, text, disabled, onClick }: IButton) => {
   const bulmaColor = getBulmaColorClass(color);
-  const isDisabled = disabled ? 'is-disabled' : '';
   return (
     <button
-      className={'button ' + bulmaColor + ' ' + isDisabled}
+      className={'button ' + bulmaColor}
+      disabled={disabled}
       onClick={onClick}
     >
       {text}

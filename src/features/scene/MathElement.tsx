@@ -8,6 +8,8 @@ import { editElement } from '../../store/contentSlice';
 import { AnimationObject } from '../animations/types';
 import { getCustomMathObject } from './elementCreators';
 import { useAnimation } from '../../hooks/useAnimation';
+import { useRef } from 'react';
+import useEventListener from '@use-it/event-listener';
 
 type Position = {
   x: number;
@@ -26,13 +28,13 @@ export interface IMathElement {
  *      a stateful component that renders its formula in LaTeX.
  *
  * Animations are not added directly to scene objects. Instead, animations are
- * choreographed by the scene manager. Each element has an initial animation, which
+ * choreographed by StageManager. Each element has an initial animation, which
  * can be an empty object, and zero or more animations that follow, which are AnimationObjects.
  */
 const MathElement = (props: IMathElement) => {
   const { currentScene } = useSelector((state: RootState) => state.control);
   const { selected, setSelected } = useSelectElement();
-  const { animate } = useAnimation(props.id);
+  const { animate, transition } = useAnimation(props.id);
   const dispatch = useDispatch();
 
   /**
@@ -73,7 +75,7 @@ const MathElement = (props: IMathElement) => {
       onClick={() => setSelected(props.id)}
       onDragEnd={() => setElementPosition(props.id, x.get(), y.get())}
       animate={animate}
-      transition={{ duration: 1 }}
+      transition={transition}
       style={{ x, y, display: 'inline-block' }}
     >
       <TeX

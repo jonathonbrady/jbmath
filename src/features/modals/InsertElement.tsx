@@ -40,8 +40,20 @@ const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
   };
 
   const body: Array<JSX.Element> = [
+    <p className="heading">Preview</p>,
     <Preview formula={text} />,
-    <Input text={text} onChange={handleTextChange} />
+    <nav className="level">
+      <div className="level-item has-text-centered">
+        <div>
+          <p className="heading">Formula</p>
+          <Input
+            text={text}
+            placeholder={'LaTeX expression'}
+            onChange={handleTextChange}
+          />
+        </div>
+      </div>
+    </nav>
   ];
 
   const handleSubmit = () => {
