@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnimationObject } from '../features/animations/types';
+import { AnimationObject } from '../features/animations';
 
 interface AnimationState {
   animations: Array<Array<AnimationObject>>;

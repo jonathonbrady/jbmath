@@ -18,7 +18,12 @@ interface Props {
   type: Modal;
   close: () => void;
   scene: number;
-  addElementToScene: (formula: string, scene: number) => void;
+  addElementToScene: (
+    formula: string,
+    scale: number,
+    rotation: number,
+    scene: number
+  ) => void;
   addSceneToProject: () => void;
   addAnimation: () => void;
 }

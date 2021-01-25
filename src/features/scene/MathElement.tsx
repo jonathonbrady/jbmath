@@ -5,11 +5,8 @@ import { useSelectElement } from '../../hooks/useSelectElement';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../app/rootReducer';
 import { editElement } from '../../store/contentSlice';
-import { AnimationObject } from '../animations/types';
 import { getCustomMathObject } from './elementCreators';
 import { useAnimation } from '../../hooks/useAnimation';
-import { useRef } from 'react';
-import useEventListener from '@use-it/event-listener';
 
 type Position = {
   x: number;
@@ -19,8 +16,9 @@ type Position = {
 export interface IMathElement {
   id: number;
   position: Position;
+  scale: number;
+  rotation: number;
   formula: string;
-  animation: AnimationObject | {};
 }
 
 /**
@@ -47,8 +45,9 @@ const MathElement = (props: IMathElement) => {
       id,
       x,
       y,
-      props.formula,
-      props.animation
+      props.scale,
+      props.rotation,
+      props.formula
     );
     dispatch(editElement({ id, currentScene, newContent }));
   }
@@ -76,12 +75,18 @@ const MathElement = (props: IMathElement) => {
       onDragEnd={() => setElementPosition(props.id, x.get(), y.get())}
       animate={animate}
       transition={transition}
-      style={{ x, y, display: 'inline-block' }}
+      style={{
+        x,
+        y,
+        scale: props.scale,
+        rotate: props.rotation,
+        display: 'inline-block'
+      }}
     >
       <TeX
         block
         math={
-          (selected.id === props.id ? HIGHLIGHT_WHEN_SELECTED : '') +
+          (selected?.id === props.id ? HIGHLIGHT_WHEN_SELECTED : '') +
           props.formula
         }
       />

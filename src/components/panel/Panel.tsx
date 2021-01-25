@@ -8,6 +8,8 @@ import { useState } from 'react';
 
 export interface IPanel {
   content: Array<PanelContent>;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
   setSelectedItem: (item: string) => void;
 }
 
@@ -16,8 +18,18 @@ export interface PanelContent {
   content: Array<string>;
 }
 
-const Panel = ({ content, setSelectedItem }: IPanel) => {
-  const { tabs, tabContent } = useContent(content, setSelectedItem);
+const Panel = ({
+  content,
+  activeTab,
+  setActiveTab,
+  setSelectedItem
+}: IPanel) => {
+  const { tabs, tabContent } = useContent(
+    content,
+    activeTab,
+    setActiveTab,
+    setSelectedItem
+  );
 
   return (
     <nav className="panel">
@@ -33,9 +45,10 @@ function isActive(b: boolean) {
 
 function useContent(
   pc: PanelContent[],
-  setSelectedItem: (name: string) => void
+  activeTab: string,
+  setActiveTab: (tab: string) => void,
+  setSelectedItem: (item: string) => void
 ) {
-  const [activeTab, setActiveTab] = useState<string>(pc[0].name);
   const [activeItem, setActiveItem] = useState<string>('');
 
   const tabs = (

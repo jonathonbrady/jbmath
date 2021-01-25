@@ -1,8 +1,4 @@
 import MathElement, { IMathElement } from './MathElement';
-import { AnimationObject } from '../animations/types';
-import { TargetAndTransition } from 'framer-motion';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../app/rootReducer';
 
 /**
  * scene:
@@ -25,9 +21,10 @@ const StageManager = ({ scene }: Props) => {
     <MathElement
       key={element.id}
       id={element.id}
-      formula={element.formula}
       position={element.position}
-      animation={element.animation}
+      scale={element.scale}
+      rotation={element.rotation}
+      formula={element.formula}
     />
   ));
   return <>{sceneContents}</>;

@@ -10,9 +10,9 @@ import Input from '../../components/ui/Input';
 import { addAnimation, addPosition } from '../../store/animationSlice';
 import { editElement } from '../../store/contentSlice';
 import { useSelectElement } from '../../hooks/useSelectElement';
-import { getAnimationSet } from '../animations/functions';
 import { IMathElement } from '../scene/MathElement';
 import { InputUpdate } from '../../components/ui/types';
+import { AnimationType, getAnimationSet } from '../animations';
 
 interface Props {
   close: () => void;
@@ -48,7 +48,12 @@ const InsertAnimationModal = ({ close }: Props) => {
     close: close
   };
 
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  /**
+   * @Bug - Selecting a tab different from the one that contains the selected
+   * animation results in a crash.
+   */
+  const [activeTab, setActiveTab] = useState<string>('Enter');
+  const [selectedItem, setSelectedItem] = useState<string>('');
   const body: JSX.Element[] = [
     <p className="heading">Applying Animation to {selected.formula}</p>,
     <Preview formula={selected.formula} />,
@@ -56,11 +61,13 @@ const InsertAnimationModal = ({ close }: Props) => {
     //prettier-ignore
     <Panel
       content={[
-        { name: 'Enter', content: getAnimationSet('enter').map((e) => e.name) },
-        { name: 'Modify', content: getAnimationSet('modify').map((e) => e.name) },
-        { name: 'Exit', content: getAnimationSet('exit').map((e) => e.name) },
-        { name: 'Miscellaneous', content: getAnimationSet('misc').map((e) => e.name) }
+        { name: 'Enter', content: getAnimationSet('Enter').map((e) => e.name) },
+        { name: 'Modify', content: getAnimationSet('Modify').map((e) => e.name) },
+        { name: 'Exit', content: getAnimationSet('Exit').map((e) => e.name) },
+        { name: 'Miscellaneous', content: getAnimationSet('Miscellaneous').map((e) => e.name) }
       ]}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
       setSelectedItem={(name: string) => setSelectedItem(name)}
     />,
     <hr></hr>,
@@ -91,22 +98,20 @@ const InsertAnimationModal = ({ close }: Props) => {
   ];
 
   const handleSubmit = () => {
-    const meta = getAnimationSet('enter').find((e) => e.name === selectedItem);
-    // This is never undefined
-    if (meta) {
-      const animationObject = {
-        meta: meta,
-        target: selected.id,
-        when: parseInt(positionText),
-        length: parseInt(lengthText)
-      };
-      if (animationObject.when > animations.length) {
-        alert('dsadsa');
-        dispatch(addPosition());
-      }
-      dispatch(addAnimation(animationObject));
-      close();
+    const meta = getAnimationSet(activeTab as AnimationType).find(
+      (e) => e.name === selectedItem
+    )!;
+    const animationObject = {
+      meta: meta,
+      target: selected.id,
+      when: parseInt(positionText),
+      length: parseInt(lengthText)
+    };
+    if (animationObject.when > animations.length) {
+      dispatch(addPosition());
     }
+    dispatch(addAnimation(animationObject));
+    close();
   };
 
   const footer: IFooter = {

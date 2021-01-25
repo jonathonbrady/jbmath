@@ -35,8 +35,13 @@ const App: React.FC = () => {
   const { scenes } = useSelector((state: RootState) => state.content);
   const { animations } = useSelector((state: RootState) => state.animations);
 
-  const addElementToScene = (formula: string, scene: number) => {
-    const element = getNewMathObject(formula);
+  const addElementToScene = (
+    formula: string,
+    scale: number,
+    rotation: number,
+    scene: number
+  ) => {
+    const element = getNewMathObject(formula, scale, rotation);
     dispatch(addElement({ element, scene }));
   };
 

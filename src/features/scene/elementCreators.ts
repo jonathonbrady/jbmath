@@ -1,19 +1,22 @@
-import { TargetAndTransition } from 'framer-motion';
-
 let id = 0;
 function nextID() {
   return id++;
 }
 
-export function getNewMathObject(formula: string) {
+export function getNewMathObject(
+  formula: string,
+  scale: number,
+  rotation: number
+) {
   return {
     id: nextID(),
     position: {
       x: 100,
       y: 100
     },
-    formula: formula,
-    animation: {}
+    scale: scale,
+    rotation: rotation,
+    formula: formula
   };
 }
 
@@ -21,8 +24,9 @@ export function getCustomMathObject(
   id: number,
   x: number,
   y: number,
-  formula: string,
-  animation: TargetAndTransition | {}
+  scale: number,
+  rotation: number,
+  formula: string
 ) {
   return {
     id: id,
@@ -30,7 +34,8 @@ export function getCustomMathObject(
       x: x,
       y: y
     },
-    formula: formula,
-    animation: animation
+    scale: scale,
+    rotation: rotation,
+    formula: formula
   };
 }

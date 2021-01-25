@@ -19,7 +19,12 @@ import { IMathElement } from '../scene/MathElement';
 interface Props {
   close: () => void;
   scene: number;
-  addElementToScene: (formula: string, scene: number) => void;
+  addElementToScene: (
+    formula: string,
+    scale: number,
+    rotation: number,
+    scene: number
+  ) => void;
 }
 
 /**
@@ -28,10 +33,18 @@ interface Props {
  *      Allows users to input a LaTeX expression to render in the current scene.
  */
 const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
-  const [text, setText] = useState<string>('');
+  const [formula, setFormula] = useState<string>('');
+  const [scale, setScale] = useState<string>('1');
+  const [rotation, setRotation] = useState<string>('0');
 
   const handleTextChange = (e: InputUpdate) => {
-    setText(e.target.value);
+    setFormula(e.target.value);
+  };
+  const handleScaleChange = (e: InputUpdate) => {
+    setScale(e.target.value);
+  };
+  const handleRotationChange = (e: InputUpdate) => {
+    setRotation(e.target.value);
   };
 
   const header: IHeader = {
@@ -41,15 +54,42 @@ const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
 
   const body: Array<JSX.Element> = [
     <p className="heading">Preview</p>,
-    <Preview formula={text} />,
+    <Preview
+      formula={formula}
+      scale={parseFloat(scale)}
+      rotation={parseFloat(rotation)}
+    />,
+    <hr></hr>,
     <nav className="level">
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Formula</p>
           <Input
-            text={text}
+            text={formula}
             placeholder={'LaTeX expression'}
             onChange={handleTextChange}
+          />
+        </div>
+      </div>
+    </nav>,
+    <nav className="level">
+      <div className="level-item has-text-centered">
+        <div>
+          <p className="heading">Scale</p>
+          <Input
+            text={scale}
+            placeholder={'Scalar multiple'}
+            onChange={handleScaleChange}
+          />
+        </div>
+      </div>
+      <div className="level-item has-text-centered">
+        <div>
+          <p className="heading">Rotation</p>
+          <Input
+            text={rotation}
+            placeholder={'Degrees clockwise'}
+            onChange={handleRotationChange}
           />
         </div>
       </div>
@@ -58,7 +98,7 @@ const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
 
   const handleSubmit = () => {
     close();
-    addElementToScene(text, scene);
+    addElementToScene(formula, parseFloat(scale), parseFloat(rotation), scene);
   };
 
   const footer: IFooter = {
@@ -66,7 +106,7 @@ const InsertElementModal = ({ close, scene, addElementToScene }: Props) => {
       {
         color: 'green',
         text: 'Confirm',
-        disabled: text.length === 0,
+        disabled: formula.length === 0,
         onClick: handleSubmit
       }
     ]
